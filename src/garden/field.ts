@@ -82,7 +82,15 @@ export function plantField(budget: RenderBudget, memories: readonly Memory[]): S
  * fondo la flor es demasiado chica para tocarla con el dedo), y exigimos
  * distancia entre una y otra para que no queden dos corazones pegados.
  */
-function assignMemories(flowers: Sunflower[], memories: readonly Memory[]): Sunflower[] {
+/**
+ * Cuántos girasoles con corazón puede haber como máximo. Si cada flor
+ * tuviera uno, dejaría de ser especial encontrarlos; los demás recuerdos
+ * se recorren con las flechas desde cualquiera de estos.
+ */
+const MAX_HEARTS = 8;
+
+function assignMemories(flowers: Sunflower[], allMemories: readonly Memory[]): Sunflower[] {
+  const memories = allMemories.slice(0, MAX_HEARTS);
   if (memories.length === 0) return flowers;
 
   const MIN_GAP = 9; // en % del ancho de pantalla

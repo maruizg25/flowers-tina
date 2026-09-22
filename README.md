@@ -11,17 +11,21 @@ grande se agranda, no al revés.
 
 ## Lo único que tienes que hacer tú
 
-### 1. Poner las fotos
+### 1. Las fotos
 
-1. Copia cada foto a la carpeta **`public/fotos/`**.
-2. Abre **`src/memories/photos.ts`** y, por cada foto, escribe un bloque como
-   los que ya están (nombre de archivo, título y dedicatoria).
+Ya están las 21 en **`public/fotos/`** (convertidas de HEIC a JPG y reducidas
+a 1600 px: de 45 MB a 5 MB). Sus dedicatorias viven en
+**`src/memories/photos.ts`**: un bloque por foto, en el orden en que se
+recorren. Para cambiar un texto edita las comillas; para quitar una foto
+borra su bloque; para agregar una, copia un bloque y cambia el `src`.
 
-Mientras una foto no exista, en su lugar aparece un marco bonito con el nombre
-del archivo que espera. Nada se rompe.
+Solo las 8 primeras de la lista aparecen como girasoles con corazón en el
+campo (si todas lo tuvieran, dejaría de ser especial); las demás se llegan
+con las flechas.
 
-> Consejo: si una foto pesa más de 2 MB, bájale el tamaño antes (en el iPhone:
-> compartir → *Opciones* → tamaño *Mediano*). Cargará mucho más rápido en 4G.
+> Para agregar fotos nuevas desde el iPhone: **Fotos → Compartir → Opciones →
+> Formato: Más compatible** para que salgan en JPG. Si pesan más de 2 MB,
+> redúcelas antes de subirlas.
 
 ### 2. Poner la canción
 
