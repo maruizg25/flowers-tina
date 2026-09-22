@@ -13,7 +13,7 @@ export const copy = {
   meta: {
     titulo: 'Girasoles para Karlita 🌻',
     descripcion:
-      'Hoy es 21 de septiembre y no encontré flores amarillas suficientes, ' +
+      'Hoy es 21 de septiembre y no pude conseguirle sus flores amarillas, ' +
       'así que le sembré un campo entero.',
   },
 
@@ -23,7 +23,7 @@ export const copy = {
     titulo: 'Karlita, mi amor',
     linea:
       'Dicen que hoy se regalan flores amarillas.\n' +
-      'No me alcanzó con un ramo,\n' +
+      'No pude darle un ramo,\n' +
       'así que le sembré un campo entero.',
     boton: 'Abra los ojos 🌻',
     pista: 'sube el volumen, esto tiene música',
