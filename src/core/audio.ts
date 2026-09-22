@@ -57,18 +57,47 @@ export class Soundtrack {
     if (this.playing) this.fadeTo(this.maxVolume);
   }
 
+  /**
+   * Lleva el volumen a un valor en un fundido corto y despues avisa.
+   *
+   * Cuidado con iOS: Safari no deja cambiar el volumen desde codigo (la
+   * propiedad se escribe pero no cambia), y un fundido que "espera a
+   * llegar" a cero no llegaria nunca, con lo que la pausa no ocurriria
+   * jamas. Por eso hay dos salidas de emergencia: si el volumen no
+   * responde, o si el fundido lleva demasiado tiempo, se corta y se llama
+   * a done() igual. Apagar de golpe es mejor que no apagar.
+   */
   private fadeTo(volume: number, done?: () => void): void {
-    this.target = volume;
+    this.target = Math.max(0, Math.min(1, volume));
     cancelAnimationFrame(this.fade);
 
+    const started = performance.now();
+    const MAX_MS = 1800;
+
+    const finish = (): void => {
+      // Si el volumen es de solo lectura esta asignacion no hace nada,
+      // y no importa: lo que cuenta es que done() (la pausa) si corre.
+      this.audio.volume = this.target;
+      done?.();
+    };
+
     const step = (): void => {
-      const diff = this.target - this.audio.volume;
-      if (Math.abs(diff) < 0.01) {
-        this.audio.volume = Math.max(0, Math.min(1, this.target));
-        done?.();
+      const before = this.audio.volume;
+      const diff = this.target - before;
+
+      if (Math.abs(diff) < 0.01 || performance.now() - started > MAX_MS) {
+        finish();
         return;
       }
-      this.audio.volume = Math.max(0, Math.min(1, this.audio.volume + diff * 0.06));
+
+      this.audio.volume = Math.max(0, Math.min(1, before + diff * 0.08));
+
+      // El volumen no se movio: este navegador no lo deja tocar.
+      if (this.audio.volume === before) {
+        finish();
+        return;
+      }
+
       this.fade = requestAnimationFrame(step);
     };
 

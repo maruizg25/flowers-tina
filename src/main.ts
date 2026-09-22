@@ -81,7 +81,14 @@ function boot(): void {
   need('.final__linea').textContent = copy.final.linea;
   need('[data-accion="volver"]').textContent = copy.final.boton;
   need('[data-accion="carta"]').textContent = copy.jardin.botonCarta;
-  need('[data-accion="musica"] .boton__texto').textContent = copy.jardin.botonMusica;
+  const musicButton = need<HTMLButtonElement>('[data-accion="musica"]');
+  const musicLabel = need('[data-accion="musica"] .boton__texto');
+  /** El boton dice lo que va a pasar si se toca, no lo que esta pasando. */
+  const reflejarMusica = (playing: boolean): void => {
+    musicButton.setAttribute('aria-pressed', String(playing));
+    musicLabel.textContent = playing ? copy.jardin.botonSilenciar : copy.jardin.botonMusica;
+  };
+  reflejarMusica(false);
   need('.hud__cancion').textContent = copy.jardin.cancion;
 
   // ── El campo ────────────────────────────────────────────────────
@@ -94,6 +101,14 @@ function boot(): void {
   const particles = new ParticleLayer(need<HTMLCanvasElement>('.particulas'), budget);
   const gallery = new Gallery(need('.visor'), memories, () => soundtrack.unduck());
   const letter = new Letter(need('.carta'), need('.carta__cuerpo'), budget.reducedMotion);
+
+  // La pantalla final nace con "inert" (invisible para el teclado y los
+  // lectores de pantalla). Hay que quitarselo al mostrarla, o su boton de
+  // volver no recibe ni toques ni foco.
+  const finalScreen = need<HTMLElement>('.final');
+  stage.onChange((scene) => {
+    finalScreen.toggleAttribute('inert', scene !== 'final');
+  });
 
   let detachParallax: (() => void) | null = null;
   let stopWhispers: (() => void) | null = null;
@@ -109,9 +124,7 @@ function boot(): void {
     // La musica tiene que arrancar aqui mismo, dentro del gesto: si lo
     // dejamos para un setTimeout el navegador lo toma como autoplay y lo
     // bloquea. No esperamos la promesa para no frenar la animacion.
-    void soundtrack.play().then((ok) => {
-      need<HTMLButtonElement>('[data-accion="musica"]').setAttribute('aria-pressed', String(ok));
-    });
+    void soundtrack.play().then(reflejarMusica);
 
     stage.goTo('amanecer');
 
@@ -194,9 +207,7 @@ function boot(): void {
         stage.goTo('jardin');
         return;
       case 'musica':
-        void soundtrack.toggle().then((playing) => {
-          target.closest<HTMLElement>('[data-accion="musica"]')?.setAttribute('aria-pressed', String(playing));
-        });
+        void soundtrack.toggle().then(reflejarMusica);
         return;
       case 'atardecer':
         // Huevo de pascua: tres toques al sol y el campo se va al

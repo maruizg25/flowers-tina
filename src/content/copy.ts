@@ -43,6 +43,7 @@ export const copy = {
     pistaRecuerdos: 'los girasoles con el corazón dorado guardan un recuerdo nuestro',
     botonCarta: 'Léeme algo bonito',
     botonMusica: 'música',
+    botonSilenciar: 'silenciar',
     /** Se muestra sobre los botones. El archivo va en public/audio/cancion.mp3 */
     cancion: '♪ One and Only — Adele',
   },
