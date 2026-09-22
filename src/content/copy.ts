@@ -14,7 +14,7 @@ export const copy = {
     titulo: 'Girasoles para Karlita 🌻',
     descripcion:
       'Hoy es 21 de septiembre y no encontré flores amarillas suficientes, ' +
-      'así que te sembré un campo entero.',
+      'así que le sembré un campo entero.',
   },
 
   /** Primera pantalla: oscuridad, una semilla de luz, y una invitacion. */
@@ -24,8 +24,8 @@ export const copy = {
     linea:
       'Dicen que hoy se regalan flores amarillas.\n' +
       'No me alcanzó con un ramo,\n' +
-      'así que te sembré un campo entero.',
-    boton: 'Abre los ojos 🌻',
+      'así que le sembré un campo entero.',
+    boton: 'Abra los ojos 🌻',
     pista: 'sube el volumen, esto tiene música',
   },
 
@@ -33,15 +33,15 @@ export const copy = {
   amanecer: [
     'Primero hubo que esperar a que saliera el sol...',
     'Los girasoles no buscan la luz.\nLa reconocen.',
-    'Yo hice lo mismo el día que te vi.',
+    'Yo hice lo mismo el día que la vi.',
   ],
 
   /** Lo que se lee cuando el jardin ya esta completo. */
   jardin: {
-    titulo: 'Un campo entero, y todos te miran a ti',
-    subtitulo: 'toca donde quieras y va a crecer uno más',
+    titulo: 'Un campo entero, y todos la miran a usted',
+    subtitulo: 'toque donde quiera y va a crecer uno más',
     pistaRecuerdos: 'los girasoles con el corazón dorado guardan un recuerdo nuestro',
-    botonCarta: 'Léeme algo bonito',
+    botonCarta: 'Léame algo bonito',
     botonMusica: 'música',
     botonSilenciar: 'silenciar',
     /** Se muestra sobre los botones. El archivo va en public/audio/cancion.mp3 */
@@ -58,11 +58,11 @@ export const copy = {
       'Karlita, mi amor:',
       'Hay una razón por la que el girasol es mi flor favorita, y no es el color.',
       'Es que hace algo que yo entiendo perfectamente: pasa el día entero girando la cabeza para no perderse ni un minuto de luz. No lo hace por costumbre. Lo hace porque sin esa luz no sabe crecer.',
-      'Yo giro así contigo. Cuando te ríes, cuando te enojas por cosas chiquitas, cuando me cuentas algo con esa urgencia tuya de contarlo todo al mismo tiempo. Giro y me acomodo para que me dé de lleno.',
+      'Yo giro así con usted. Cuando se ríe, cuando se enoja por cosas chiquitas, cuando me cuenta algo con esa urgencia suya de contarlo todo al mismo tiempo. Giro y me acomodo para que me dé de lleno.',
       'Y hay algo más que casi nadie sabe de los girasoles: cuando ya están grandes y cargados de semillas, dejan de girar y se quedan mirando al oriente. Fijos. Esperando el amanecer siempre desde el mismo lugar.',
-      'Eso es lo que quiero contigo. Ya no ando buscando por dónde sale la luz. Ya sé para dónde mirar.',
-      'Feliz día de las flores amarillas, mi amor. Este campo no se marchita: vive en internet y en el código que lo dibuja, y va a seguir floreciendo cada vez que abras este enlace.',
-      'Tuyo, girando,',
+      'Eso es lo que quiero con usted. Ya no ando buscando por dónde sale la luz. Ya sé para dónde mirar.',
+      'Feliz día de las flores amarillas, mi amor. Este campo no se marchita: vive en internet y en el código que lo dibuja, y va a seguir floreciendo cada vez que abra este enlace.',
+      'Suyo, girando,',
     ],
     firma: 'Mau 🌻',
     boton: 'cerrar la carta',
@@ -70,7 +70,7 @@ export const copy = {
 
   /** Lo ultimo, despues de la carta: lluvia de petalos. */
   final: {
-    titulo: 'Te amo',
+    titulo: 'La amo',
     linea: 'y me quedo mirando al oriente.',
     boton: 'volver al jardín',
   },
