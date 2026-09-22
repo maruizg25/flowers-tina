@@ -7,11 +7,11 @@
 
 export const copy = {
   /** Como se llama ella. Aparece en varios lugares. */
-  ella: 'Tina',
+  ella: 'Karlita',
 
   /** Pestana del navegador y vista previa al compartir el enlace. */
   meta: {
-    titulo: 'Girasoles para Tina 🌻',
+    titulo: 'Girasoles para Karlita 🌻',
     descripcion:
       'Hoy es 21 de septiembre y no encontre flores amarillas suficientes, ' +
       'asi que te sembre un campo entero.',
@@ -20,7 +20,7 @@ export const copy = {
   /** Primera pantalla: oscuridad, una semilla de luz, y una invitacion. */
   semilla: {
     fecha: '21 de septiembre',
-    titulo: 'Ma Chérie Tina',
+    titulo: 'Karlita, mi amor',
     linea:
       'Dicen que hoy se regalan flores amarillas.\n' +
       'No me alcanzo con un ramo,\n' +
@@ -52,9 +52,9 @@ export const copy = {
    * maquina de escribir. Agrega o quita parrafos con total libertad.
    */
   carta: {
-    encabezado: 'Para ti, que floreces sin pedir permiso',
+    encabezado: 'Para Karlita, que florece sin pedir permiso',
     parrafos: [
-      'Ma Chérie Tina:',
+      'Karlita, mi amor:',
       'Hay una razon por la que el girasol es mi flor favorita, y no es el color.',
       'Es que hace algo que yo entiendo perfectamente: pasa el dia entero girando la cabeza para no perderse ni un minuto de luz. No lo hace por costumbre. Lo hace porque sin esa luz no sabe crecer.',
       'Yo giro asi contigo. Cuando te rees, cuando te enojas por cosas chiquitas, cuando me cuentas algo con esa urgencia tuya de contarlo todo al mismo tiempo. Giro y me acomodo para que me de de lleno.',

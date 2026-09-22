@@ -19,7 +19,7 @@ import { copy } from './content/copy';
 
 /**
  * ═══════════════════════════════════════════════════════════════════
- *  Girasoles para Tina
+ *  Girasoles para Karlita
  * ═══════════════════════════════════════════════════════════════════
  *
  *  Este archivo es el guion de la obra, y nada mas. No dibuja flores ni
@@ -184,6 +184,11 @@ function boot(): void {
         return;
       case 'cerrar-carta':
         cerrarCarta();
+        return;
+      case 'saltar-carta':
+        // Un toque sobre la hoja muestra la carta entera: quien ya la
+        // leyo, o no quiere esperar al tecleo, no tiene por que hacerlo.
+        letter.revealAll();
         return;
       case 'volver':
         stage.goTo('jardin');

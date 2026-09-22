@@ -1,4 +1,4 @@
-# 🌻 Girasoles para Tina
+# 🌻 Girasoles para Karlita
 
 Un campo de girasoles que florece cada vez que se abre el enlace.
 Hecho con TypeScript, CSS y luz. Sin frameworks, sin dependencias en producción:
