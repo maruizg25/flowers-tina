@@ -75,7 +75,7 @@ export class Letter {
         if (i < text.length) {
           // El punto y la coma piden una pausa mas larga: asi respira.
           const ch = text[i - 1] ?? '';
-          const pause = ch === '.' || ch === ':' ? 260 : ch === ',' ? 120 : 16 + Math.random() * 24;
+          const pause = ch === '.' || ch === ':' ? 220 : ch === ',' ? 90 : 11 + Math.random() * 18;
           this.timer = window.setTimeout(typeChar, pause);
         } else {
           node.classList.replace('is-typing', 'is-done');
