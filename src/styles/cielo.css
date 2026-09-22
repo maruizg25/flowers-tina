@@ -1,0 +1,301 @@
+/* ═══════════════════════════════════════════════════════════════════
+   EL CIELO — de la noche cerrada al mediodia dorado
+   ═══════════════════════════════════════════════════════════════════
+
+   Los degradados de fondo no se pueden animar entre ellos: el navegador
+   no sabe interpolar un degradado con otro. Asi que en vez de cambiar un
+   fondo, apilamos tres cielos completos (noche, alba, dia) y cruzamos
+   sus opacidades. Es el truco de los telones del teatro, y da una
+   transicion perfectamente suave a costo casi cero.                    */
+
+.cielo {
+  background:
+    radial-gradient(150% 100% at 50% 100%, var(--noche-violeta) 0%, transparent 55%),
+    linear-gradient(to bottom, var(--noche-honda) 0%, var(--noche) 45%, #14103a 100%);
+}
+
+.cielo::before,
+.cielo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--amanecer) var(--curva-suave);
+}
+
+/* Telon dos: el alba. Rubor bajo y violeta arriba. */
+.cielo::before {
+  background:
+    radial-gradient(120% 78% at 50% 104%, var(--alba) 0%, var(--rubor) 34%, transparent 72%),
+    linear-gradient(to bottom, #120d33 0%, var(--crepusculo) 52%, #7a3b56 100%);
+}
+
+/* Telon tres: el dia dorado del jardin. */
+.cielo::after {
+  background:
+    radial-gradient(130% 88% at 50% 102%, var(--sol-claro) 0%, var(--sol) 18%, var(--ambar) 42%, transparent 78%),
+    linear-gradient(to bottom, #2e6fa8 0%, #7fb3d4 38%, var(--miel) 82%, var(--ambar) 100%);
+}
+
+body.escena--amanecer .cielo::before {
+  opacity: 1;
+}
+body.escena--jardin .cielo::before,
+body.escena--carta .cielo::before,
+body.escena--final .cielo::before {
+  opacity: 1;
+}
+body.escena--jardin .cielo::after,
+body.escena--carta .cielo::after,
+body.escena--final .cielo::after {
+  opacity: 1;
+}
+
+/* ── Huevo de pascua: tocar el sol tres veces trae el atardecer ──── */
+body.luz--atardecer .cielo {
+  filter: hue-rotate(-24deg) saturate(1.25) brightness(0.86);
+}
+body.luz--atardecer .campo {
+  filter: hue-rotate(-14deg) saturate(1.1) brightness(0.8);
+}
+
+/* ── Estrellas ───────────────────────────────────────────────────
+   Un campo de estrellas hecho con degradados radiales que se repiten.
+   Dos capas de distinto tamano y velocidad rompen el patron, que si no
+   se nota como un mosaico.                                            */
+.cielo__estrellas {
+  position: absolute;
+  inset: -10%;
+  background-image:
+    radial-gradient(1.4px 1.4px at 22px 31px, #fff 40%, transparent 100%),
+    radial-gradient(1.1px 1.1px at 133px 88px, #e8f0ff 40%, transparent 100%),
+    radial-gradient(1.6px 1.6px at 201px 42px, #fff 40%, transparent 100%),
+    radial-gradient(1px 1px at 76px 176px, #fff2d8 40%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 247px 205px, #fff 40%, transparent 100%);
+  background-size: 290px 260px;
+  opacity: 0.9;
+  animation: titilar 5.5s ease-in-out infinite alternate;
+  transition: opacity calc(var(--amanecer) * 0.7) var(--curva-suave);
+}
+
+.cielo__estrellas--finas {
+  background-image:
+    radial-gradient(0.9px 0.9px at 48px 66px, #fff 40%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 160px 24px, #cfe0ff 40%, transparent 100%),
+    radial-gradient(1px 1px at 96px 140px, #fff 40%, transparent 100%);
+  background-size: 190px 170px;
+  opacity: 0.55;
+  animation-duration: 8s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes titilar {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* Al amanecer las estrellas se apagan, como en la vida real. Hay que
+   quitar la animacion de titilar ademas de bajar la opacidad: una
+   animacion en curso le gana a cualquier transicion sobre la misma
+   propiedad, y las estrellas se quedarian encendidas a pleno dia. */
+body:not(.escena--semilla) .cielo__estrellas {
+  animation: none;
+  opacity: 0;
+}
+
+/* ── El sol ──────────────────────────────────────────────────────
+   Empieza hundido bajo el horizonte y sube durante todo el amanecer.  */
+.sol {
+  position: absolute;
+  left: 50%;
+  bottom: 30vh;
+  width: 34vmin;
+  height: 34vmin;
+  translate: -50% 0;
+  transform: translateY(70vh) scale(0.72);
+  opacity: 0;
+  transition:
+    transform var(--amanecer) cubic-bezier(0.18, 0.72, 0.2, 1),
+    opacity calc(var(--amanecer) * 0.45) linear;
+}
+
+body:not(.escena--semilla) .sol {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.sol__nucleo {
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, #fffdf2 0%, var(--sol-claro) 42%, var(--sol) 72%, var(--ambar) 100%);
+  box-shadow:
+    0 0 6vmin 1vmin rgba(255, 224, 102, 0.75),
+    0 0 18vmin 4vmin rgba(255, 165, 60, 0.4);
+  pointer-events: auto;
+  animation: latido-sol 6s ease-in-out infinite alternate;
+}
+
+@keyframes latido-sol {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.06;
+  }
+}
+
+.sol__halo {
+  position: absolute;
+  inset: -80%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 120, 0.42) 0%, rgba(255, 168, 70, 0.16) 38%, transparent 68%);
+}
+
+/* En el celular el sol sube mas: asi asoma sobre el campo en vez de
+   quedar tapado por las cabezas de las flores del frente. */
+@media (max-width: 640px) {
+  .sol {
+    bottom: 46vh;
+    width: 44vmin;
+    height: 44vmin;
+  }
+}
+
+/* Rayos de sol: una rueda de gajos claros, muy borrosa y girando
+   despacio. Borrosa es la clave — nitida parece un logo, borrosa
+   parece luz atravesando el aire. */
+.sol__rayos {
+  position: absolute;
+  inset: -190%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 240, 190, 0.3) 0deg 3deg,
+    transparent 3deg 16deg
+  );
+  filter: blur(14px);
+  opacity: 0;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(circle, #000 12%, rgba(0, 0, 0, 0.55) 40%, transparent 68%);
+  animation: girar-rayos 110s linear infinite;
+  transition: opacity calc(var(--amanecer) * 1.2) linear;
+}
+
+body.escena--jardin .sol__rayos,
+body.escena--carta .sol__rayos,
+body.escena--final .sol__rayos {
+  opacity: 0.85;
+}
+
+@keyframes girar-rayos {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* ── Bruma ───────────────────────────────────────────────────────
+   Dos bandas anchas que se cruzan lentamente. Es lo que separa un
+   fondo plano de un paisaje con aire dentro.                          */
+.cielo__bruma {
+  position: absolute;
+  left: -30%;
+  width: 160%;
+  border-radius: 50%;
+  filter: blur(28px);
+  opacity: 0;
+  transition: opacity var(--amanecer) linear;
+}
+
+.cielo__bruma--alta {
+  bottom: 26vh;
+  height: 16vh;
+  background: linear-gradient(to right, transparent, rgba(255, 236, 196, 0.3) 35%, rgba(255, 220, 170, 0.18) 65%, transparent);
+  animation: derivar 46s ease-in-out infinite alternate;
+}
+
+.cielo__bruma--baja {
+  bottom: 8vh;
+  height: 22vh;
+  background: linear-gradient(to right, transparent, rgba(255, 248, 230, 0.4) 45%, transparent);
+  animation: derivar 64s ease-in-out infinite alternate-reverse;
+}
+
+body:not(.escena--semilla) .cielo__bruma {
+  opacity: 1;
+}
+
+@keyframes derivar {
+  from {
+    translate: -6% 0;
+  }
+  to {
+    translate: 6% 0;
+  }
+}
+
+/* ── Colinas ─────────────────────────────────────────────────────
+   Tres elipses gigantes asomando por abajo. Cada una mas oscura y mas
+   alta que la anterior: es la receta mas simple para dar distancia.   */
+.colina {
+  position: absolute;
+  left: -25%;
+  width: 150%;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  opacity: 0;
+  transition: opacity var(--amanecer) var(--curva-suave);
+}
+
+.colina--3 {
+  bottom: 13vh;
+  height: 26vh;
+  background: linear-gradient(to bottom, #6f7f52, #4c5c3a);
+  filter: blur(2px);
+}
+
+.colina--2 {
+  bottom: 7vh;
+  height: 22vh;
+  left: -35%;
+  width: 170%;
+  background: linear-gradient(to bottom, #4a6135, #2e4224);
+}
+
+.colina--1 {
+  bottom: 0;
+  height: 17vh;
+  left: -15%;
+  width: 130%;
+  background: linear-gradient(to bottom, #2f4a22, #1b2f15);
+}
+
+body:not(.escena--semilla) .colina {
+  opacity: 1;
+}
+
+/* ── La tierra ───────────────────────────────────────────────────
+   Una franja al pie de la pantalla. Da a las flores un sitio de donde
+   salir y cierra la composicion por abajo.                            */
+.tierra {
+  top: auto;
+  height: 12vh;
+  background: linear-gradient(to bottom, rgba(26, 42, 18, 0) 0%, rgba(22, 36, 16, 0.75) 45%, #10200c 100%);
+  opacity: 0;
+  transition: opacity var(--amanecer) var(--curva-suave);
+}
+
+body:not(.escena--semilla) .tierra {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cielo__estrellas,
+  .sol__nucleo,
+  .sol__rayos,
+  .cielo__bruma {
+    animation: none;
+  }
+}

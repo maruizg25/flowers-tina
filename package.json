@@ -1,0 +1,17 @@
+{
+  "name": "girasoles-para-tina",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Un jardin interactivo de girasoles: una carta de amor hecha de codigo, CSS y luz.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "~5.6.3",
+    "vite": "~5.4.11"
+  }
+}

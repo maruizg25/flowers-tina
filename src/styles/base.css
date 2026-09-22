@@ -1,0 +1,218 @@
+/* ═══════════════════════════════════════════════════════════════════
+   BASE — reglas de arranque, paleta y el manejo de escenas
+   ═══════════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Paleta ──────────────────────────────────────────────────────
+     Un solo viaje cromatico: de la noche fria al mediodia dorado.   */
+  --noche-honda: #05040f;
+  --noche: #0b0a1e;
+  --noche-violeta: #1b1240;
+  --crepusculo: #3d2360;
+  --rubor: #8c3f5d;
+  --alba: #e8734a;
+  --ambar: #ffa53c;
+  --miel: #ffc861;
+  --sol: #ffe066;
+  --sol-claro: #fff6cf;
+
+  --petalo: 44;          /* tono base de los petalos, en grados hsl */
+  --cabeza: 30vmin;      /* diametro de una cabeza con escala 1 */
+  --hoja-clara: #7ac74f;
+  --hoja: #4e9b3a;
+  --hoja-honda: #23601f;
+  --tallo: #3f8c34;
+
+  --tinta: #fff8e7;
+  --tinta-suave: #f3e3c4;
+  --tinta-tenue: #c9b896;
+
+  /* ── Tipografia ─────────────────────────────────────────────────
+     Serif para lo que se lee despacio, manuscrita para lo intimo,
+     sans solo para los controles.                                   */
+  --letra-titulo: 'Cormorant Garamond', 'Times New Roman', serif;
+  --letra-mano: 'Caveat', 'Segoe Script', cursive;
+  --letra-ui: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ── Ritmo ──────────────────────────────────────────────────────
+     Duraciones con nombre: si el amanecer se siente lento, se
+     cambia un numero aqui y todo el resto sigue cuadrando.          */
+  --crecer: 1.9s;
+  --amanecer: 7s;
+  --transicion: 0.85s;
+  --curva-brote: cubic-bezier(0.22, 0.9, 0.24, 1);
+  --curva-petalo: cubic-bezier(0.2, 1.5, 0.35, 1);
+  --curva-suave: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  background: var(--noche-honda);
+  color: var(--tinta);
+  font-family: var(--letra-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* En iOS la barra de direcciones tapa el borde inferior; esto evita
+     que las flores nazcan debajo de ella. */
+  min-height: 100svh;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* El SVG con los degradados compartidos no debe ocupar espacio. */
+.defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Visible para lectores de pantalla, invisible para los ojos. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Foco visible ────────────────────────────────────────────────
+   Nunca lo quitamos: quien navega con teclado tiene que poder ver
+   donde esta parado, aunque el sitio sea decorativo.                */
+:focus-visible {
+  outline: 2px solid var(--sol);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ESCENAS
+   El <body> lleva una clase por momento. Cada pantalla decide si se
+   muestra segun esa clase, asi que cambiar de escena en JS es una sola
+   linea y toda la coreografia la resuelve el CSS.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-pantalla] {
+  transition:
+    opacity var(--transicion) var(--curva-suave),
+    transform var(--transicion) var(--curva-suave),
+    visibility var(--transicion);
+}
+
+[data-pantalla][hidden],
+.pantalla-oculta {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ── Contenedores fijos a pantalla completa ─────────────────────── */
+.cielo,
+.colinas,
+.campo,
+.particulas,
+.tierra {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cielo {
+  z-index: 0;
+}
+.colinas {
+  z-index: 1;
+}
+.campo {
+  z-index: 2;
+  overflow: hidden;
+}
+.tierra {
+  z-index: 3;
+}
+.particulas {
+  z-index: 4;
+}
+
+/* El campo si escucha los toques: ahi se siembran flores nuevas. */
+body.escena--jardin .campo,
+body.escena--final .campo {
+  pointer-events: auto;
+}
+
+.semilla,
+.susurro,
+.titular,
+.hud,
+.visor,
+.carta,
+.final {
+  position: fixed;
+}
+
+.semilla {
+  z-index: 40;
+}
+.susurro {
+  z-index: 20;
+}
+.titular {
+  z-index: 20;
+}
+.hud {
+  z-index: 30;
+}
+.carta {
+  z-index: 50;
+}
+.visor {
+  z-index: 60;
+}
+.final {
+  z-index: 45;
+}
+
+/* ── Preferencia de menos movimiento ─────────────────────────────
+   No apagamos la experiencia: la contamos con luz y desvanecidos en
+   vez de con vaivenes. Quien marca esta opcion suele hacerlo porque
+   el movimiento le marea, no porque no quiera ver nada.             */
+/* Movil primero: las cabezas se miden contra un ancho de 390px, no
+   contra un monitor. En pantallas grandes se agrandan, no al reves.   */
+@media (max-width: 640px) {
+  :root {
+    --cabeza: 24vmin;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --crecer: 0.9s;
+    --amanecer: 2.5s;
+  }
+}

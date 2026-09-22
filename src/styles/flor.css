@@ -1,0 +1,390 @@
+/* ═══════════════════════════════════════════════════════════════════
+   LOS GIRASOLES
+   ═══════════════════════════════════════════════════════════════════
+
+   Cada flor recibe sus rasgos como variables CSS desde sunflower.ts:
+
+     --x      posicion horizontal (%)
+     --h      altura del tallo (vh)
+     --s      escala de la cabeza
+     --delay  cuando empieza a crecer (s)
+     --sway   cuanto tarda un vaiven completo (s)
+     --lean   inclinacion propia del tallo (deg)
+     --hue    corrimiento de tono de los petalos (numero, grados hsl)
+
+   El resto son estas reglas, iguales para las cuarenta y seis flores.
+   Un solo juego de keyframes anima todo el campo.                      */
+
+.campo__capa {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* Los planos del fondo se ven mas lejos: mas chicos, mas azulados y
+   ligeramente desenfocados, como los mira un ojo de verdad. */
+.campo__capa--fondo {
+  filter: blur(2.4px) brightness(0.74) saturate(0.85);
+  opacity: 0.82;
+}
+
+.campo__capa--medio {
+  filter: blur(0.5px) brightness(0.9);
+}
+
+/* La sombra de las flores del frente es cara de dibujar: solo en
+   pantallas grandes, donde sobra maquina y se nota la diferencia. */
+@media (min-width: 768px) {
+  .campo__capa--frente {
+    filter: drop-shadow(0 6px 14px rgba(40, 24, 4, 0.28));
+  }
+}
+
+/* ── Anclaje de cada flor ────────────────────────────────────────
+   El elemento .bloom no dibuja nada: es solo un punto clavado en el
+   suelo, a la altura que le toca. Todo cuelga de ahi.                 */
+.bloom {
+  position: absolute;
+  left: var(--x);
+  bottom: 4vh;
+  width: 0;
+  height: var(--h);
+  translate: -50% 0;
+}
+
+/* ── El tallo completo, que se mece con el viento ─────────────────
+   La inclinacion propia de la flor va dentro de los keyframes, no
+   aparte: si estuvieran en propiedades distintas, la animacion
+   pisaria la inclinacion y todas las flores quedarian rectas.         */
+.bloom__stalk {
+  position: absolute;
+  inset: 0;
+  transform-origin: bottom center;
+  rotate: var(--lean);
+  animation: mecer var(--sway) ease-in-out var(--delay) infinite alternate;
+}
+
+@keyframes mecer {
+  from {
+    rotate: calc(var(--lean) - 1.7deg);
+  }
+  to {
+    rotate: calc(var(--lean) + 1.7deg);
+  }
+}
+
+/* ── El tallo ────────────────────────────────────────────────────
+   Crece estirandose desde la base. El recorte en trapecio lo hace mas
+   ancho abajo que arriba, como un tallo de verdad.                    */
+.bloom__stem {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: clamp(2.5px, calc(1.05vmin * var(--s)), 13px);
+  height: 100%;
+  translate: -50% 0;
+  background: linear-gradient(to right, var(--hoja-honda) 0%, var(--tallo) 38%, var(--hoja-clara) 55%, var(--hoja) 100%);
+  clip-path: polygon(32% 0, 68% 0, 100% 100%, 0 100%);
+  transform-origin: bottom center;
+  transform: scaleY(0);
+  animation: crecer var(--crecer) var(--curva-brote) var(--delay) forwards;
+}
+
+@keyframes crecer {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ── Las hojas ───────────────────────────────────────────────────
+   Brotan cuando el tallo ya paso por su altura; el retardo lo calcula
+   sunflower.ts y llega en --hd.                                       */
+.hoja {
+  position: absolute;
+  bottom: var(--at);
+  left: 50%;
+  width: calc(9vmin * var(--s));
+  height: calc(4.2vmin * var(--s));
+  background: linear-gradient(135deg, var(--hoja-clara) 0%, var(--hoja) 55%, var(--hoja-honda) 100%);
+  scale: 0;
+  animation: brotar 0.85s var(--curva-petalo) var(--hd) forwards;
+}
+
+/* La nervadura central: una linea clara y fina cruzando la hoja. */
+.hoja::after {
+  content: '';
+  position: absolute;
+  inset: 48% 12% 48% 12%;
+  background: linear-gradient(to right, transparent, rgba(226, 255, 200, 0.55), transparent);
+  border-radius: 50%;
+}
+
+.hoja--izq {
+  border-radius: 100% 0 100% 0;
+  transform-origin: right bottom;
+  rotate: -16deg;
+  translate: -100% 0;
+}
+
+.hoja--der {
+  border-radius: 0 100% 0 100%;
+  transform-origin: left bottom;
+  rotate: 16deg;
+}
+
+@keyframes brotar {
+  to {
+    scale: 1;
+  }
+}
+
+/* ── La cabeza ───────────────────────────────────────────────────
+   Sube exactamente al ritmo del tallo: misma duracion, misma curva y
+   mismo retardo que "crecer". Por eso queda pegada a la punta durante
+   todo el recorrido sin calcular nada cuadro a cuadro.                */
+.bloom__head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: calc(var(--cabeza) * var(--s));
+  aspect-ratio: 1;
+  margin-left: calc(var(--cabeza) * -0.5 * var(--s));
+  margin-top: calc(var(--cabeza) * -0.5 * var(--s));
+  transform: translateY(var(--h));
+  animation: subir var(--crecer) var(--curva-brote) var(--delay) forwards;
+}
+
+@keyframes subir {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Cabeceo propio de la cabeza, encima del vaiven del tallo. Van en
+   elementos distintos porque un mismo elemento no puede llevar dos
+   animaciones peleando por la misma propiedad. */
+.bloom__head-sway {
+  position: absolute;
+  inset: 0;
+  animation: cabecear calc(var(--sway) * 1.35) ease-in-out var(--delay) infinite alternate;
+}
+
+@keyframes cabecear {
+  from {
+    rotate: -3.4deg;
+  }
+  to {
+    rotate: 3.4deg;
+  }
+}
+
+/* El resplandor calido detras de la flor: lo que hace que parezca
+   iluminada por el sol y no pegada encima del cielo. */
+.bloom__glow {
+  position: absolute;
+  inset: -34%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    hsl(calc(46 + var(--hue)) 100% 72% / 0.4) 0%,
+    hsl(calc(38 + var(--hue)) 100% 60% / 0.16) 38%,
+    transparent 66%
+  );
+  opacity: 0;
+  animation: encender 2.4s ease-out calc(var(--delay) + var(--crecer)) forwards;
+}
+
+@keyframes encender {
+  to {
+    opacity: 1;
+  }
+}
+
+.bloom__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Los petalos ─────────────────────────────────────────────────
+   Se abren uno tras otro dando la vuelta al reloj. El retardo de cada
+   uno llega en --pd desde el generador, y el conjunto arranca cuando el
+   tallo termino de crecer.                                            */
+.petalo {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  rotate: var(--a);
+  scale: 0.02;
+  opacity: 0;
+  stroke: hsl(calc(30 + var(--hue)) 75% 38% / 0.28);
+  stroke-width: 0.7;
+  animation: abrir 0.95s var(--curva-petalo) calc(var(--delay) + var(--crecer) * 0.78 + var(--pd)) forwards;
+}
+
+/* Anillo externo: el amarillo pleno que se ve de lejos. */
+.petalo--externo {
+  fill: hsl(calc(var(--petalo) + var(--hue)) 96% 57%);
+}
+
+/* Los petalos del frente proyectan una sombra tenue sobre los de atras:
+   es lo que separa una corola con cuerpo de un abanico plano. */
+.bloom--frente .petalo--externo,
+.bloom--medio .petalo--externo {
+  filter: drop-shadow(0 1.2px 0.8px rgba(120, 60, 0, 0.35));
+}
+
+/* Anillo interno: mas oscuro y mas corto. Asoma entre los petalos de
+   afuera y hace de sombra propia, que es lo que le da volumen a la
+   flor. Sin este anillo la cabeza se ve como una calcomania. */
+.petalo--interno {
+  fill: hsl(calc(var(--petalo) + var(--hue) - 7) 92% 46%);
+}
+
+@keyframes abrir {
+  0% {
+    scale: 0.02;
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  62% {
+    scale: 1.09;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+/* ── El disco de semillas ────────────────────────────────────────── */
+.bloom__disc {
+  fill: url(#disco);
+  opacity: 0;
+  animation: encender 1.1s ease-out calc(var(--delay) + var(--crecer) * 0.7) forwards;
+}
+
+.bloom__seeds {
+  opacity: 0;
+  animation: encender 1.6s ease-out calc(var(--delay) + var(--crecer)) forwards;
+}
+
+.semilla-punto {
+  fill: #20100a;
+}
+
+.semilla-punto--clara {
+  fill: #5d3313;
+}
+
+/* ── El corazon de las flores con recuerdo ───────────────────────
+   Late despacio y tiene un aura que respira. Es la unica senal visual
+   de que ahi se puede tocar, asi que tiene que verse desde lejos sin
+   romper la estetica del campo.                                       */
+.corazon {
+  opacity: 0;
+  animation: encender 1.4s ease-out calc(var(--delay) + var(--crecer) + 0.9s) forwards;
+}
+
+.corazon__aura {
+  fill: url(#aura);
+  animation: respirar 2.8s ease-in-out infinite alternate;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.corazon__forma {
+  fill: #ffe9a3;
+  stroke: #fff8dc;
+  stroke-width: 0.8;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: latir 2.2s ease-in-out infinite;
+}
+
+@keyframes respirar {
+  from {
+    scale: 0.85;
+    opacity: 0.45;
+  }
+  to {
+    scale: 1.25;
+    opacity: 0.95;
+  }
+}
+
+@keyframes latir {
+  0%,
+  100% {
+    scale: 1;
+  }
+  14% {
+    scale: 1.17;
+  }
+  28% {
+    scale: 1;
+  }
+  42% {
+    scale: 1.11;
+  }
+  56% {
+    scale: 1;
+  }
+}
+
+/* La zona tocable, un circulo invisible sobre la cabeza. */
+.bloom__pick {
+  position: absolute;
+  inset: 26%;
+  border-radius: 50%;
+  pointer-events: auto;
+  transition: scale 0.25s var(--curva-suave);
+}
+
+.bloom__pick:hover,
+.bloom__pick:focus-visible {
+  scale: 1.12;
+}
+
+.bloom__pick:focus-visible {
+  outline: 2px dashed var(--sol-claro);
+  outline-offset: 6px;
+}
+
+/* ── Mientras estamos en la semilla, el campo espera quieto ──────
+   Las animaciones existen ya en el DOM pero con el reloj en pausa. Al
+   cambiar de escena se les da play y los retardos se cumplen tal cual
+   fueron pensados: el amanecer arranca desde el primer cuadro.        */
+body.escena--semilla .campo *,
+body.escena--semilla .bloom * {
+  animation-play-state: paused !important;
+}
+
+body.escena--semilla .campo {
+  visibility: hidden;
+}
+
+/* ── Flores sembradas con el dedo ────────────────────────────────── */
+.bloom--brote .bloom__glow {
+  animation-duration: 1.2s;
+}
+
+/* ── Menos movimiento: la flor aparece, no se mece ───────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .bloom__stalk,
+  .bloom__head-sway,
+  .corazon__aura {
+    animation: none;
+  }
+
+  .corazon__forma {
+    animation: latir 3.4s ease-in-out infinite;
+  }
+
+  .petalo {
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+  }
+}

@@ -1,0 +1,421 @@
+/* ═══════════════════════════════════════════════════════════════════
+   INTERFAZ — la semilla, los susurros, el titular, los controles
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Botones ─────────────────────────────────────────────────────── */
+.boton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.9em 2.1em;
+  border-radius: 999px;
+  font-family: var(--letra-ui);
+  font-size: clamp(0.85rem, 2.6vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition:
+    transform 0.25s var(--curva-suave),
+    box-shadow 0.35s var(--curva-suave),
+    background-color 0.3s var(--curva-suave);
+}
+
+.boton:hover {
+  transform: translateY(-2px);
+}
+
+.boton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* El boton principal: parece hecho de luz de sol. */
+.boton--luz {
+  overflow: hidden; /* el destello no debe asomar fuera de la pastilla */
+  color: #3b2508;
+  background: linear-gradient(135deg, var(--sol-claro) 0%, var(--sol) 45%, var(--ambar) 100%);
+  box-shadow:
+    0 6px 20px rgba(255, 176, 60, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  font-weight: 600;
+}
+
+.boton--luz:hover {
+  box-shadow:
+    0 10px 34px rgba(255, 186, 70, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+}
+
+/* El brillo que cruza el boton cada tanto, como un reflejo. */
+.boton--luz::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.65) 50%, transparent 65%);
+  translate: -120% 0;
+  animation: destello 4.5s ease-in-out 1.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes destello {
+  0%,
+  72% {
+    translate: -120% 0;
+  }
+  92%,
+  100% {
+    translate: 120% 0;
+  }
+}
+
+.boton--suave {
+  color: var(--tinta);
+  background: rgba(20, 14, 34, 0.42);
+  border: 1px solid rgba(255, 238, 190, 0.32);
+  backdrop-filter: blur(10px);
+  padding: 0.75em 1.5em;
+}
+
+.boton--suave:hover {
+  background: rgba(30, 20, 46, 0.6);
+  border-color: rgba(255, 238, 190, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PANTALLA UNO — LA SEMILLA
+   Oscuridad total, un punto de luz, y una invitacion.
+   ═══════════════════════════════════════════════════════════════════ */
+.semilla {
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(0.8rem, 2.4vh, 1.6rem);
+  padding: 8vh clamp(1.2rem, 6vw, 3rem);
+  text-align: center;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 48%, rgba(40, 24, 72, 0.65) 0%, transparent 70%),
+    var(--noche-honda);
+}
+
+body:not(.escena--semilla) .semilla {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  scale: 1.09;
+  filter: blur(8px);
+}
+
+/* El brote: un punto de luz que respira. Es la primera cosa que se ve
+   en la pantalla y su unica tarea es prometer que algo va a pasar. */
+.semilla__brote {
+  width: clamp(44px, 12vmin, 88px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 46% 40%, #fffdf0 0%, var(--sol) 36%, var(--ambar) 64%, transparent 78%);
+  box-shadow:
+    0 0 24px 6px rgba(255, 214, 110, 0.5),
+    0 0 70px 20px rgba(255, 168, 60, 0.26);
+  animation:
+    respirar-brote 3.4s ease-in-out infinite alternate,
+    llegar 1.6s var(--curva-suave) both;
+}
+
+@keyframes respirar-brote {
+  from {
+    scale: 0.88;
+    opacity: 0.75;
+  }
+  to {
+    scale: 1.08;
+    opacity: 1;
+  }
+}
+
+.semilla__fecha {
+  font-family: var(--letra-ui);
+  font-size: clamp(0.66rem, 2.4vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+  animation: llegar 1.4s var(--curva-suave) 0.3s both;
+}
+
+.semilla__titulo {
+  font-family: var(--letra-mano);
+  font-size: clamp(2.6rem, 13vw, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  /* Texto relleno con un degradado: el mismo truco del cielo, aplicado
+     a las letras. Da la sensacion de que el titulo esta hecho de sol. */
+  background: linear-gradient(120deg, var(--sol-claro) 0%, var(--sol) 40%, var(--ambar) 78%, var(--miel) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 18px rgba(255, 180, 70, 0.32));
+  animation: llegar 1.6s var(--curva-suave) 0.55s both;
+}
+
+.semilla__linea {
+  max-width: 34ch;
+  /* El texto trae saltos de linea escritos a mano en copy.ts y aqui se
+     respetan tal cual: la poesia se rompe donde quiere quien la escribe. */
+  white-space: pre-line;
+  font-family: var(--letra-titulo);
+  font-size: clamp(1.05rem, 4.4vw, 1.5rem);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--tinta-suave);
+  animation: llegar 1.6s var(--curva-suave) 0.9s both;
+}
+
+.semilla__boton {
+  margin-top: clamp(0.4rem, 2vh, 1.2rem);
+  animation: llegar 1.4s var(--curva-suave) 1.35s both;
+}
+
+.semilla__pista {
+  font-size: clamp(0.66rem, 2.6vw, 0.78rem);
+  letter-spacing: 0.12em;
+  color: rgba(201, 184, 150, 0.7);
+  animation: llegar 1.6s var(--curva-suave) 1.8s both;
+}
+
+@keyframes llegar {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LOS SUSURROS — frases que acompanan el amanecer
+   ═══════════════════════════════════════════════════════════════════ */
+.susurro {
+  inset: auto 0 auto 0;
+  top: 50%;
+  translate: 0 -50%;
+  padding: 0 clamp(1.5rem, 8vw, 5rem);
+  text-align: center;
+  white-space: pre-line;
+  font-family: var(--letra-titulo);
+  font-size: clamp(1.3rem, 5.6vw, 2.6rem);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--tinta);
+  text-shadow: 0 2px 30px rgba(20, 8, 40, 0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.4s var(--curva-suave), filter 1.4s var(--curva-suave);
+  filter: blur(6px);
+}
+
+.susurro.is-visible {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EL TITULAR DEL JARDIN
+   ═══════════════════════════════════════════════════════════════════ */
+.titular {
+  inset: 0 0 auto 0;
+  padding: calc(env(safe-area-inset-top, 0px) + clamp(1.1rem, 4vh, 2.6rem)) clamp(1.2rem, 6vw, 3rem) 0;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  translate: 0 -24px;
+}
+
+body.escena--jardin .titular,
+body.escena--final .titular {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Texto claro con sombra oscura: el cielo detras pasa del violeta al
+   azul y al dorado, y el titulo tiene que leerse sobre los tres. */
+.titular__texto {
+  font-family: var(--letra-titulo);
+  font-size: clamp(1.2rem, 4.7vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--sol-claro);
+  text-shadow:
+    0 1px 2px rgba(30, 14, 4, 0.55),
+    0 4px 22px rgba(30, 14, 4, 0.55);
+}
+
+.titular__pista {
+  margin-top: 0.5em;
+  font-family: var(--letra-mano);
+  font-size: clamp(1rem, 3.9vw, 1.35rem);
+  color: var(--sol);
+  text-shadow:
+    0 1px 2px rgba(30, 14, 4, 0.6),
+    0 3px 16px rgba(30, 14, 4, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CONTROLES DE ABAJO
+   ═══════════════════════════════════════════════════════════════════ */
+.hud {
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  row-gap: 0.55rem;
+  gap: clamp(0.5rem, 2.5vw, 1rem);
+  padding: 0 clamp(1rem, 5vw, 2rem) calc(env(safe-area-inset-bottom, 0px) + clamp(1.1rem, 3.5vh, 2rem));
+  opacity: 0;
+  translate: 0 24px;
+}
+
+body.escena--jardin .hud {
+  opacity: 1;
+  translate: 0 0;
+}
+
+body:not(.escena--jardin) .hud {
+  pointer-events: none;
+}
+
+/* El icono de la musica se dibuja con CSS: dos barras que suben y bajan
+   cuando suena, quietas cuando esta en pausa. */
+.boton__icono {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+.boton__icono::before,
+.boton__icono::after {
+  content: '';
+  position: absolute;
+  bottom: 0.1em;
+  width: 0.2em;
+  border-radius: 1px;
+  background: currentColor;
+  height: 0.45em;
+}
+
+.boton__icono::before {
+  left: 0.16em;
+}
+
+.boton__icono::after {
+  left: 0.56em;
+  height: 0.75em;
+}
+
+[data-accion='musica'][aria-pressed='true'] .boton__icono::before {
+  animation: barra 0.75s ease-in-out infinite alternate;
+}
+
+[data-accion='musica'][aria-pressed='true'] .boton__icono::after {
+  animation: barra 0.55s ease-in-out 0.2s infinite alternate-reverse;
+}
+
+[data-accion='musica'][aria-pressed='false'] {
+  opacity: 0.6;
+}
+
+/* El nombre de la cancion, chiquito y encima de los botones. */
+.hud__cancion {
+  flex-basis: 100%;
+  text-align: center;
+  font-family: var(--letra-mano);
+  font-size: clamp(0.95rem, 3.6vw, 1.15rem);
+  color: var(--sol-claro);
+  text-shadow: 0 1px 10px rgba(30, 14, 4, 0.7);
+  opacity: 0.9;
+}
+
+@keyframes barra {
+  from {
+    height: 0.24em;
+  }
+  to {
+    height: 0.82em;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EL FINAL
+   ═══════════════════════════════════════════════════════════════════ */
+.final {
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(1rem, 3vh, 2rem);
+  padding: 8vh clamp(1.2rem, 6vw, 3rem);
+  text-align: center;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(60, 26, 12, 0.5) 0%, transparent 72%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.escena--final .final {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.final__titulo {
+  font-family: var(--letra-mano);
+  font-size: clamp(4rem, 22vw, 11rem);
+  font-weight: 700;
+  line-height: 0.95;
+  background: linear-gradient(120deg, #fff8dc 0%, var(--sol) 38%, var(--alba) 92%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 30px rgba(255, 140, 60, 0.5));
+  animation: aparecer-grande 2.2s var(--curva-suave) both;
+}
+
+.final__linea {
+  font-family: var(--letra-titulo);
+  font-size: clamp(1.1rem, 4.6vw, 1.7rem);
+  font-style: italic;
+  color: var(--tinta);
+  text-shadow: 0 2px 24px rgba(40, 12, 4, 0.7);
+  animation: llegar 1.8s var(--curva-suave) 1s both;
+}
+
+.final [data-accion='volver'] {
+  animation: llegar 1.6s var(--curva-suave) 2s both;
+}
+
+@keyframes aparecer-grande {
+  from {
+    opacity: 0;
+    scale: 0.7;
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton--luz::after,
+  .semilla__brote {
+    animation: none;
+  }
+  .semilla__brote {
+    opacity: 1;
+  }
+}
