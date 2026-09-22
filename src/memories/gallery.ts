@@ -88,15 +88,27 @@ export class Gallery {
         }
       </div>`;
 
-    // Si la foto no carga, el marco cambia de cara en vez de romperse.
     const img = this.root.querySelector<HTMLImageElement>('.polaroid__foto');
     const frame = this.root.querySelector<HTMLElement>('.polaroid__marco');
     if (img && frame) {
+      // El marco toma la orientacion de la foto: una vertical no se
+      // recorta a la fuerza en un marco horizontal (se comia las caras).
+      // Se acota el ratio para que ni una panoramica ni una tira muy alta
+      // desarmen la polaroid en pantalla chica.
+      const fitFrame = (): void => {
+        if (img.naturalWidth === 0) return;
+        const ratio = Math.min(1.5, Math.max(0.8, img.naturalWidth / img.naturalHeight));
+        frame.style.aspectRatio = String(ratio);
+      };
+      // Si la foto no carga, el marco cambia de cara en vez de romperse.
       const markMissing = (): void => frame.classList.add('sin-foto');
+      img.addEventListener('load', fitFrame, { once: true });
       img.addEventListener('error', markMissing, { once: true });
-      // naturalWidth en cero significa que ya fallo antes de que pusieramos
-      // el listener (por ejemplo, si venia de cache con error).
-      if (img.complete && img.naturalWidth === 0) markMissing();
+      // Si venia de cache ya esta resuelta y los eventos no se disparan.
+      if (img.complete) {
+        if (img.naturalWidth === 0) markMissing();
+        else fitFrame();
+      }
     }
   }
 
